@@ -4,5 +4,5 @@
 		"Ben Goodwyn"
 	],
 	"description": "Advent of Code for 2017 in D",
-	"license": "proprietary"
+	"license": "MIT"
 }
