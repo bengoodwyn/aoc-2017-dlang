@@ -1,3 +1,5 @@
+<img src="https://travis-ci.org/bengoodwyn/aoc-2017-dlang.svg?branch=master"/>
+
 # Advent of Code
 
 http://adventofcode.com
