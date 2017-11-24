@@ -1,6 +1,5 @@
 import std.stdio;
 import std.string;
-import std.typecons;
 
 auto input(int day) {
     return File("inputs/day%d.txt".format(day));
