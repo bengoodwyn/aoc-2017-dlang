@@ -19,10 +19,17 @@ void main() {
             mixin(`import day_module = day%d;`.format(day));
             static foreach (part; 1..3) {
                 {
-                    immutable description = "Day %d Part %d: ".format(day, part);
-                    auto lines = input(day).byLine(KeepTerminator.no, day_module.separator);
-                    auto result = mixin(`day_module.part%d`.format(part))(lines);
-                    writeln(description, result);
+                    static if (is(typeof(mixin(`day_module.part%d`.format(part))))) {
+                        immutable description = "Day %d Part %d: ".format(day, part);
+                        static if (is(typeof(day_module.separator))) {
+                            immutable separator = day_module.separator;
+                        } else {
+                            immutable separator = '\n';
+                        }
+                        auto lines = input(day).byLine(KeepTerminator.no, day_module.separator);
+                        auto result = mixin(`day_module.part%d`.format(part))(lines);
+                        writeln(description, result);
+                    }
                 }
             }
         }
