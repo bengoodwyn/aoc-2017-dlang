@@ -12,9 +12,9 @@ body {
 
 void main() {
     static foreach (day; 1..26) {
+        mixin(`import day%d;`
+                .format(day));
         static foreach (part; 1..3) {
-            mixin(`import day%d;`
-                    .format(day));
             mixin(`write("Day %d Part %d: ");`
                     .format(day, part));
             mixin(`writeln(day%d.part%d(input(%d).byLine(KeepTerminator.no,'%s')));`
