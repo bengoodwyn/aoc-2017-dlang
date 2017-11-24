@@ -2,7 +2,7 @@ import std.algorithm;
 import std.range;
 import std.string;
 
-immutable string separator = "\\n";
+immutable separator = "\\n";
 
 auto part1(T)(T lines) {
     return lines
