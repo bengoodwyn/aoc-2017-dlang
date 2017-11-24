@@ -1,7 +1,12 @@
 import std.stdio;
 import std.string;
 
-auto input(int day) {
+auto input(int day) 
+in {
+    assert(day > 0);
+    assert(day <= 25);
+}
+body {
     return File("inputs/day%d.txt".format(day));
 }
 
