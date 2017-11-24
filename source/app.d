@@ -15,13 +15,17 @@ body {
 
 void main() {
     static foreach (day; 1..26) {
-        mixin(`import day%d;`
-                .format(day));
-        static foreach (part; 1..3) {
-            mixin(`write("Day %d Part %d: ");`
-                    .format(day, part));
-            mixin(`writeln(day%d.part%d(input(%d).byLine(KeepTerminator.no,'%s')));`
-                    .format(day,part,day,mixin(`day%d.separator`.format(day))));
+        {
+            mixin(`import day_module = day%d;`.format(day));
+            immutable separator = mixin(`'%s'`.format(day_module.separator));
+            static foreach (part; 1..3) {
+                {
+                    immutable description = "Day %d Part %d: ".format(day, part);
+                    auto lines = input(day).byLine(KeepTerminator.no, separator);
+                    auto result = mixin(`day_module.part%d`.format(part))(lines);
+                    writeln(description, result);
+                }
+            }
         }
     }
 }
