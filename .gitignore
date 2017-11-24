@@ -8,3 +8,4 @@ aoc-*
 *.o
 *.obj
 *.lst
+*.swp
