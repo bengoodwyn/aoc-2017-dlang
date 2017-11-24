@@ -6,6 +6,9 @@ in {
     assert(day > 0);
     assert(day <= 25);
 }
+out (result) {
+    assert(&result !is null);
+}
 body {
     return File("inputs/day%d.txt".format(day));
 }
