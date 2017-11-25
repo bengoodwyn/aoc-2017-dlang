@@ -1,4 +1,4 @@
-<img src="https://travis-ci.org/bengoodwyn/aoc-2017-dlang.svg?branch=master"/>
+[![Build Status](https://travis-ci.org/bengoodwyn/aoc-2017-dlang.svg?branch=master)](https://travis-ci.org/bengoodwyn/aoc-2017-dlang)
 
 # Advent of Code
 
