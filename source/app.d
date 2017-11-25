@@ -1,16 +1,19 @@
+import std.range;
 import std.stdio;
 import std.string;
 
-private auto input(int day)
+private auto input_lines(int day, char separator)
 in {
     assert(day > 0);
     assert(day <= 25);
 }
 out (result) {
     assert(&result !is null);
+    assert(isForwardRange!string);
 }
 body {
-    return File("inputs/day%d.txt".format(day));
+    return File("inputs/day%d.txt".format(day))
+            .byLine(KeepTerminator.no, separator);
 }
 
 void main() {
@@ -26,7 +29,7 @@ void main() {
                         } else {
                             immutable separator = '\n';
                         }
-                        auto lines = input(day).byLine(KeepTerminator.no, separator);
+                        auto lines = input_lines(day, separator);
                         auto result = mixin(`day_module.part%d`.format(part))(lines);
                         writeln(description, result);
                     }
