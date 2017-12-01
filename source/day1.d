@@ -1,6 +1,5 @@
 import std.algorithm;
 import std.range;
-import std.typecons;
 
 auto inverse_captcha(const char[] digits, ulong offset) {
     return
