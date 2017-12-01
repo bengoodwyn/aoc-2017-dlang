@@ -1,14 +1,12 @@
 import std.algorithm;
 import std.range;
 
-auto inverse_captcha(const char[] digits, ulong offset) {
-    return
-        digits
-            .zip(digits.cycle.drop(offset))
-            .filter!(pair => pair[0] == pair[1])
-            .map!(pair => pair[0] - '0')
-            .sum;
-}
+immutable inverse_captcha = (const char[] digits, ulong offset) =>
+    digits
+        .zip(digits.cycle.drop(offset))
+        .filter!(pair => pair[0] == pair[1])
+        .map!(pair => pair[0] - '0')
+        .sum;
 
 auto part1(T)(T lines) {
     return
