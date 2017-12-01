@@ -2,10 +2,10 @@ import std.algorithm;
 import std.range;
 import std.typecons;
 
-auto inverse_captcha(const char[] digits) {
+auto inverse_captcha(const char[] digits, ulong offset) {
     return
         digits
-            .zip(digits.cycle.drop(1))
+            .zip(digits.cycle.drop(offset))
             .filter!(pair => pair[0] == pair[1])
             .map!(pair => pair[0] - '0')
             .sum;
@@ -14,7 +14,7 @@ auto inverse_captcha(const char[] digits) {
 auto part1(T)(T lines) {
     return
         lines
-            .map!inverse_captcha
+            .map!(digits => inverse_captcha(digits, 1))
             .sum;
 }
 
@@ -27,4 +27,24 @@ unittest {
            "1234 produces 0 because no digit matches the next.");
     assert(9 == part1(["91212129"]),
            "91212129 produces 9 because the only digit that matches the next one is the last digit, 9.");
+}
+
+auto part2(T)(T lines) {
+    return
+        lines
+            .map!(digits => inverse_captcha(digits, digits.length/2))
+            .sum;
+}
+
+unittest {
+    assert(6 == part2(["1212"]),
+           "1212 produces 6: the list contains 4 items, and all four digits match the digit 2 items ahead.");
+    assert(0 == part2(["1221"]),
+           "1221 produces 0, because every comparison is between a 1 and a 2.");
+    assert(4 == part2(["123425"]),
+           "123425 produces 4, because both 2s match each other, but no other digit has a match.");
+    assert(12 == part2(["123123"]),
+           "123123 produces 12.");
+    assert(4 == part2(["12131415"]),
+           "12131415 produces 4.");
 }
