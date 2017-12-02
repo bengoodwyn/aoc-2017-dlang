@@ -30,19 +30,12 @@ unittest {
            "In this example, the spreadsheet's checksum would be 8 + 4 + 6 = 18.");
 }
 
-immutable pairs =
-    ((const int[] row) =>
-        iota(0,row.length)
-        .map!(first => row[first..$])
-        .map!(slice => slice[0].repeat.zip(slice[1..$]))
-        .joiner);
-
 auto part2(T)(T lines) {
     return lines
         .map!spreadsheet_row
         .map!(row =>
-                row
-                .pairs
+                .cartesianProduct(row, row)
+                .filter!(pair => pair[1] > pair[0])
                 .filter!(pair => 0 == (pair[1] % pair[0]))
                 .front)
         .map!(x => x[1] / x[0])
