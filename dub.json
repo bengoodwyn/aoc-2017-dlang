@@ -1,9 +1,9 @@
 {
-	"name": "aoc-2017-dlang",
-	"authors": [
-		"Ben Goodwyn"
-	],
-	"description": "Advent of Code for 2017 in D",
-	"license": "MIT",
+    "name": "aoc-2017-dlang",
+    "authors": [
+        "Ben Goodwyn"
+    ],
+    "description": "Advent of Code for 2017 in D",
+    "license": "MIT",
     "dflags": ["-J."]
 }
