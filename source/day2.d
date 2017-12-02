@@ -1,5 +1,4 @@
 import std.algorithm;
-import std.array;
 import std.conv;
 import std.range;
 import std.string;
