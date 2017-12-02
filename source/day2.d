@@ -34,7 +34,7 @@ auto part2(T)(T lines) {
     return lines
         .map!spreadsheet_row
         .map!(row =>
-                .cartesianProduct(row, row)
+                cartesianProduct(row, row)
                 .filter!(pair => pair[1] > pair[0])
                 .filter!(pair => 0 == (pair[1] % pair[0]))
                 .front)
