@@ -10,8 +10,7 @@ immutable spreadsheet_row =
             .split
             .map!(x => to!int(x))
             .array
-            .sort
-            .array);
+            .sort);
 
 auto part1(T)(T lines) {
     return lines
