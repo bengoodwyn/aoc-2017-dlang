@@ -4,18 +4,16 @@ import std.conv;
 import std.range;
 import std.string;
 
-immutable spreadsheet_row =
+immutable ints =
     ((const char[] line) =>
         line
             .split
-            .map!(x => to!int(x))
-            .array
-            .sort);
+            .map!(x => to!int(x)));
 
 auto part1(T)(T lines) {
     return lines
-        .map!spreadsheet_row
-        .map!(row => row[$-1] - row[0])
+        .map!ints
+        .map!(row => row.fold!max - row.fold!min)
         .sum;
 }
 
@@ -31,7 +29,7 @@ unittest {
 
 auto part2(T)(T lines) {
     return lines
-        .map!spreadsheet_row
+        .map!ints
         .map!(row =>
                 cartesianProduct(row, row)
                 .filter!(pair => pair[1] > pair[0])
