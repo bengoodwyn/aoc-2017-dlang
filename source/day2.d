@@ -57,4 +57,4 @@ unittest {
     ];
     assert(9 == part2(example),
            "In this example, the sum of the results would be 4 + 3 + 2 = 9.");
-
+}
