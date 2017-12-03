@@ -169,34 +169,28 @@ unittest {
     assert(2 == part1([15]),"15");
 }
 
-struct State {
-    int last;
-    Grid grid;
-}
-
-auto update_grid_delegate(ref State state) {
-    return delegate(Coordinates base_coords) {
-        int value =
-                Directions
-                .map!(direction => base_coords.move(direction))
-                .filter!(coords => coords in state.grid)
-                .map!(coords => state.grid[coords])
-                .sum;
-        value = max(value, 1);
-        state.grid[base_coords] = value;
-        return value;
-    };
-}
-
 auto part2(T)(T lines) {
     immutable limit = lines.map!(to!int).front;
 
-    State state;
-    auto update_grid = update_grid_delegate(state);
+    struct State {
+        int last;
+        Grid grid;
+    }
 
+    State state;
     return
         all_coordinates
-        .map!update_grid
+        .map!(delegate(Coordinates base_coords) {
+                int value =
+                        Directions
+                        .map!(direction => base_coords.move(direction))
+                        .filter!(coords => coords in state.grid)
+                        .map!(coords => state.grid[coords])
+                        .sum;
+                value = max(value, 1);
+                state.grid[base_coords] = value;
+                return value;
+            })
         .filter!(value => value > limit)
         .take(1)
         .front;
