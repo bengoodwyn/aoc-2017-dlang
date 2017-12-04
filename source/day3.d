@@ -63,33 +63,27 @@ unittest {
 }
 
 auto all_coordinates() {
-    bool initial = true;
-    Coordinates position;
-    Direction direction;
-    Direction next_direction;
+    Coordinates position = Coordinates(0,0);
+    Direction direction = Direction.Down;
+    Direction next_direction = next_desired_direction(direction);
     Grid visited;
 
+    visited[position] = 1;
+
     Coordinates next_coordinates() {
-        if (initial) {
-            initial = false;
-            position = Coordinates(0,0);
-            direction = Direction.Down;
+        immutable desired_position = position.move(next_direction);
+        if (desired_position !in visited) {
+            position = desired_position;
+            direction = next_direction;
             next_direction = next_desired_direction(direction);
         } else {
-            immutable desired_position = position.move(next_direction);
-            if (desired_position !in visited) {
-                position = desired_position;
-                direction = next_direction;
-                next_direction = next_desired_direction(direction);
-            } else {
-                position = position.move(direction);
-            }
+            position = position.move(direction);
         }
         visited[position] = 1;
         return position;
     }
 
-    return generate!next_coordinates;
+    return [Coordinates(0,0)].chain(generate!next_coordinates);
 }
 
 unittest {
