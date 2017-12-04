@@ -39,22 +39,14 @@ unittest {
 
 Coordinates move(Coordinates from, Direction dir) {
     final switch (dir) with (Direction) {
-        case Up:
-            return Coordinates(from.x, from.y+1);
-        case Left:
-            return Coordinates(from.x-1, from.y);
-        case Down:
-            return Coordinates(from.x, from.y-1);
-        case Right:
-            return Coordinates(from.x+1, from.y);
-        case UpRight:
-            return Coordinates(from.x+1, from.y+1);
-        case UpLeft:
-            return Coordinates(from.x-1, from.y+1);
-        case DownLeft:
-            return Coordinates(from.x-1, from.y-1);
-        case DownRight:
-            return Coordinates(from.x+1, from.y-1);
+        case Up:        return Coordinates(from.x,   from.y+1);
+        case Left:      return Coordinates(from.x-1, from.y);
+        case Down:      return Coordinates(from.x,   from.y-1);
+        case Right:     return Coordinates(from.x+1, from.y);
+        case UpRight:   return Coordinates(from.x+1, from.y+1);
+        case UpLeft:    return Coordinates(from.x-1, from.y+1);
+        case DownLeft:  return Coordinates(from.x-1, from.y-1);
+        case DownRight: return Coordinates(from.x+1, from.y-1);
     }
 }
 
