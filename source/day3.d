@@ -1,3 +1,4 @@
+import fluent.asserts;
 import std.algorithm;
 import std.array;
 import std.conv;
@@ -31,10 +32,12 @@ Direction next_desired_direction(Direction dir) {
 }
 
 unittest {
-    assert(Direction.Up    == next_desired_direction(Direction.Right), "Right -> Up");
-    assert(Direction.Left  == next_desired_direction(Direction.Up),    "Up -> Left");
-    assert(Direction.Down  == next_desired_direction(Direction.Left),  "Left -> Down");
-    assert(Direction.Right == next_desired_direction(Direction.Down),  "Down -> Right");
+    with (Direction) {
+        Right.next_desired_direction.should.equal(Up);
+        Up.next_desired_direction.should.equal(Left);
+        Left.next_desired_direction.should.equal(Down);
+        Down.next_desired_direction.should.equal(Right);
+    }
 }
 
 Coordinates move(Coordinates from, Direction dir) {
@@ -52,14 +55,16 @@ Coordinates move(Coordinates from, Direction dir) {
 
 unittest {
     immutable start = Coordinates(100,100);
-    assert(Coordinates(100,101) == start.move(Direction.Up), "Up");
-    assert(Coordinates( 99,100) == start.move(Direction.Left), "Left");
-    assert(Coordinates(100, 99) == start.move(Direction.Down), "Down");
-    assert(Coordinates(101,100) == start.move(Direction.Right), "Right");
-    assert(Coordinates(101,101) == start.move(Direction.UpRight), "UpRight");
-    assert(Coordinates( 99,101) == start.move(Direction.UpLeft), "UpLeft");
-    assert(Coordinates( 99, 99) == start.move(Direction.DownLeft), "DownLeft");
-    assert(Coordinates(101, 99) == start.move(Direction.DownRight), "DownRight");
+    with (Direction) {
+        start.move(Up).should.equal(Coordinates(100, 101));
+        start.move(Left).should.equal(Coordinates(99, 100));
+        start.move(Down).should.equal(Coordinates(100, 99));
+        start.move(Right).should.equal(Coordinates(101, 100));
+        start.move(UpRight).should.equal(Coordinates(101, 101));
+        start.move(UpLeft).should.equal(Coordinates(99, 101));
+        start.move(DownLeft).should.equal(Coordinates(99, 99));
+        start.move(DownRight).should.equal(Coordinates(101, 99));
+    }
 }
 
 auto all_coordinates() {
@@ -114,11 +119,10 @@ unittest {
             Coordinates(1,-2),
             Coordinates(2,-2)
         ];
-    assert(25 == zip(expected_coords, all_coordinates).count, "all_coordinates and expected_coords zip to 25 items");
+    zip(expected_coords, all_coordinates).count.should.equal(expected_coords.length)
+        .because("make sure all_coordinates produces enough outputs to zip");
     zip(expected_coords, all_coordinates)
-        .each!(pair => assert(
-                            pair[0] == pair[1],
-                            "Expected:%s Actual:%s".format(pair[0], pair[1])));
+        .each!(pair => pair[1].should.equal(pair[0]));
 }
 
 auto distance(Coordinates coords) {
@@ -126,10 +130,10 @@ auto distance(Coordinates coords) {
 }
 
 unittest {
-    assert(3 == Coordinates( 1, 2).distance, "Positive Positive");
-    assert(4 == Coordinates(-2, 2).distance, "Negative Positive");
-    assert(4 == Coordinates( 1,-3).distance, "Positive Negative");
-    assert(5 == Coordinates(-3,-2).distance, "Negative Negative");
+    Coordinates(1, 2).distance.should.equal(3);
+    Coordinates(-2, 2).distance.should.equal(4);
+    Coordinates(1, -3).distance.should.equal(4);
+    Coordinates(-3, -2).distance.should.equal(5);
 }
 
 
@@ -139,21 +143,21 @@ auto part1(T)(T lines) {
 }
 
 unittest {
-    assert(0 == part1([1]), "part1:1");
-    assert(1 == part1([2]), "part1:2");
-    assert(2 == part1([3]), "part1:3");
-    assert(1 == part1([4]), "part1:4");
-    assert(2 == part1([5]), "part1:5");
-    assert(1 == part1([6]), "part1:6");
-    assert(2 == part1([7]), "part1:7");
-    assert(1 == part1([8]), "part1:8");
-    assert(2 == part1([9]), "part1:9");
-    assert(3 == part1([10]),"part1:10");
-    assert(2 == part1([11]),"part1:11");
-    assert(3 == part1([12]),"part1:12");
-    assert(4 == part1([13]),"part1:13");
-    assert(3 == part1([14]),"part1:14");
-    assert(2 == part1([15]),"part1:15");
+    [1].part1.should.equal(0);
+    [2].part1.should.equal(1);
+    [3].part1.should.equal(2);
+    [4].part1.should.equal(1);
+    [5].part1.should.equal(2);
+    [6].part1.should.equal(1);
+    [7].part1.should.equal(2);
+    [8].part1.should.equal(1);
+    [9].part1.should.equal(2);
+    [10].part1.should.equal(3);
+    [11].part1.should.equal(2);
+    [12].part1.should.equal(3);
+    [13].part1.should.equal(4);
+    [14].part1.should.equal(3);
+    [15].part1.should.equal(2);
 }
 
 auto part2(T)(T lines) {
@@ -178,5 +182,5 @@ auto part2(T)(T lines) {
 }
 
 unittest {
-    assert(806 == part2([747]), "part2:747");
+    [747].part2.should.equal(806);
 }
