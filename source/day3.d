@@ -172,23 +172,18 @@ unittest {
 auto part2(T)(T lines) {
     immutable limit = lines.map!(to!int).front;
 
-    struct State {
-        int last;
-        Grid grid;
-    }
-
-    State state;
+    Grid grid;
     return
         all_coordinates
         .map!(delegate(Coordinates base_coords) {
                 int value =
                         Directions
                         .map!(direction => base_coords.move(direction))
-                        .filter!(coords => coords in state.grid)
-                        .map!(coords => state.grid[coords])
+                        .filter!(coords => coords in grid)
+                        .map!(coords => grid[coords])
                         .sum;
                 value = max(value, 1);
-                state.grid[base_coords] = value;
+                grid[base_coords] = value;
                 return value;
             })
         .filter!(value => value > limit)
