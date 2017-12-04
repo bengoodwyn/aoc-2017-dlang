@@ -114,6 +114,7 @@ unittest {
             Coordinates(1,-2),      // 24
             Coordinates(2,-2)       // 25
         ];
+    assert(25 == zip(expected_coords, all_coordinates).count);
     zip(expected_coords, all_coordinates)
         .each!(pair => assert(
                             pair[0] == pair[1],
