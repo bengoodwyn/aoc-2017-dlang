@@ -187,7 +187,6 @@ auto part2(T)(T lines) {
                 return value;
             })
         .filter!(value => value > limit)
-        .take(1)
         .front;
 }
 
