@@ -1,4 +1,4 @@
-import fluent.asserts;
+version(unittest) import fluent.asserts;
 import std.algorithm;
 import std.array;
 import std.conv;
