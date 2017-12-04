@@ -1,3 +1,4 @@
+import fluent.asserts;
 import std.algorithm;
 import std.conv;
 import std.range;
@@ -17,13 +18,12 @@ auto part1(T)(T lines) {
 }
 
 unittest {
-    immutable example = [
+    [
         "5 1 9 5",
         "7 5 3",
         "2 4 6 8"
-    ];
-    assert(18 == part1(example),
-           "In this example, the spreadsheet's checksum would be 8 + 4 + 6 = 18.");
+    ].part1.should.equal(18)
+        .because("In this example, the spreadsheet's checksum would be 8 + 4 + 6 = 18.");
 }
 
 auto part2(T)(T lines) {
@@ -39,11 +39,10 @@ auto part2(T)(T lines) {
 }
 
 unittest {
-    immutable example = [
+    [
         "5 9 2 8",
         "9 4 7 3",
         "3 8 6 5"
-    ];
-    assert(9 == part2(example),
-           "In this example, the sum of the results would be 4 + 3 + 2 = 9.");
+    ].part2.should.equal(9)
+        .because("In this example, the sum of the results would be 4 + 3 + 2 = 9.");
 }
