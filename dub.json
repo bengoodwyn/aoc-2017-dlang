@@ -5,5 +5,8 @@
     ],
     "description": "Advent of Code for 2017 in D",
     "license": "MIT",
-    "dflags": ["-J."]
+    "dflags": ["-J."],
+    "dependencies": {
+        "fluent-asserts": "~>0.8.3"
+    }
 }
