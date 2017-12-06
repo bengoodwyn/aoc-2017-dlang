@@ -10,10 +10,10 @@ import std.typecons;
 char separator = '\t';
 
 void redistribute(ref int[] banks) {
-    int max_index = to!int(banks.maxIndex);
-    int length = to!int(banks.length);
-    int index = (max_index+1)%length;
-    int blocks_to_distribute = banks[max_index];
+    auto max_index = banks.maxIndex;
+    auto length = banks.length;
+    auto index = (max_index+1)%length;
+    auto blocks_to_distribute = banks[max_index];
     banks[max_index]=0;
     while (blocks_to_distribute > 0) {
         ++banks[index];
