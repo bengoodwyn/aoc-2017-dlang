@@ -9,17 +9,15 @@ import std.typecons;
 
 char separator = '\t';
 
-void redistribute(ref int[] banks) {
-    auto max_index = banks.maxIndex;
-    auto length = banks.length;
-    auto index = (max_index+1)%length;
-    auto blocks_to_distribute = banks[max_index];
+void redistribute(int[] banks) {
+    const max_index = banks.maxIndex;
+    const length = banks.length;
+    const blocks_to_distribute = banks[max_index];
+
     banks[max_index]=0;
-    while (blocks_to_distribute > 0) {
-        ++banks[index];
-        index = (index+1)%length;
-        --blocks_to_distribute;
-    }
+    iota(0,blocks_to_distribute)
+        .map!(iteration => (max_index+iteration+1) % length)
+        .each!(index => ++banks[index]);
 }
 
 auto to_banks(T)(T lines) {
@@ -31,14 +29,19 @@ auto to_banks(T)(T lines) {
 
 auto redistribute_until_repeat(int[] banks) {
     int[string] known_banks;
-    int count = 0;
-    do {
-        known_banks[banks.to!string] = count;
-        redistribute(banks);
-        ++count;
-    } while (banks.to!string !in known_banks);
 
-    return tuple(count, count - known_banks[banks.to!string]);
+    const count =
+        iota(0, int.max)
+        .tee!(count => {
+                known_banks[banks.to!string] = count;
+                redistribute(banks);
+            }())
+        .filter!(count => banks.to!string in known_banks)
+        .front;
+
+    return tuple(
+            count,
+            count - known_banks[banks.to!string]);
 }
 
 auto part1(T)(T lines) {
