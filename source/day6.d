@@ -28,13 +28,13 @@ auto to_banks(T)(T lines) {
 }
 
 auto redistribute_until_repeat(int[] banks) {
-    int[string] known_banks;
+    ulong[string] known_banks;
 
     const count =
-        iota(0, int.max)
-        .tee!(count => {
-                known_banks[banks.to!string] = count;
+        generate!(() => {
+                known_banks[banks.to!string] = known_banks.length;
                 redistribute(banks);
+                return known_banks.length;
             }())
         .filter!(count => banks.to!string in known_banks)
         .front;
