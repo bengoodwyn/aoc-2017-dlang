@@ -4,6 +4,15 @@
         "Ben Goodwyn"
     ],
     "description": "Advent of Code for 2017 in D",
+    "targetType": "executable",
+    "mainSourceFile": "source/app.d",
+    "configurations" : [
+        { "name": "default" },
+        {
+            "name": "ctfe",
+            "versions": ["ctfe"]
+        }
+    ],
     "license": "MIT",
     "dflags": ["-J."],
     "dependencies": {
