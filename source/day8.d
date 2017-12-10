@@ -31,9 +31,12 @@ auto instruction(const char[] line) {
             tokens[6].to!int);
 }
 
-immutable operate = `if (instruction.operator=="%1$s") { return registers.get(instruction.source_register, 0) %1$s instruction.value; }`;
 
 bool condition(Instruction instruction, const ref int[string] registers) {
+    immutable operate =
+        `if (instruction.operator=="%1$s") {` ~
+            `return registers.get(instruction.source_register, 0) %1$s instruction.value;` ~
+        `}`;
     static foreach (operator; ["==","<=",">=","!=","<",">"]) {
         mixin(operate.format(operator));
     }
