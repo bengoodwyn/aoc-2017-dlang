@@ -31,22 +31,13 @@ auto instruction(const char[] line) {
             tokens[6].to!int);
 }
 
+immutable operate = `if (instruction.operator=="%1$s") { return registers.get(instruction.source_register, 0) %1$s instruction.value; }`;
+
 bool condition(Instruction instruction, const ref int[string] registers) {
-    if (instruction.operator=="==") {
-        return registers.get(instruction.source_register, 0) == instruction.value;
-    } else if (instruction.operator=="<") {
-        return registers.get(instruction.source_register, 0) < instruction.value;
-    } else if (instruction.operator==">") {
-        return registers.get(instruction.source_register, 0) > instruction.value;
-    } else if (instruction.operator=="<=") {
-        return registers.get(instruction.source_register, 0) <= instruction.value;
-    } else if (instruction.operator==">=") {
-        return registers.get(instruction.source_register, 0) >= instruction.value;
-    } else if (instruction.operator=="!=") {
-        return registers.get(instruction.source_register, 0) != instruction.value;
-    } else {
-        throw new Exception("Invalid operator " ~ instruction.operator);
+    static foreach (operator; ["==","<=",">=","!=","<",">"]) {
+        mixin(operate.format(operator));
     }
+    throw new Exception("Invalid operator " ~ instruction.operator);
 }
 
 int execute(Instruction instruction, ref int[string] registers) {
