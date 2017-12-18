@@ -37,9 +37,18 @@ auto part1(T)(T lines) {
 
 auto part2(T)(T lines) {
     immutable steps = lines.map!(to!int).front;
-    auto buffer = steps.spinlock(50_000_000);
 
-    return buffer[0];
+    int value_after_zero = 0;
+    int position = 0;
+    foreach (i; 1..50_000_001) {
+        position = (position + steps) % i;
+        if (0 == position) {
+            value_after_zero = i;
+        }
+        ++position;
+    }
+
+    return value_after_zero;
 }
 
 unittest {
