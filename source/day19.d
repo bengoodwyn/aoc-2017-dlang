@@ -61,26 +61,29 @@ Location next(Location l, const Diagram d) {
             l.dir);
 }
 
-auto part1(T)(T lines) {
-    Diagram d = lines.diagram;
+auto explore(Diagram d) {
     Location l = d.initial;
 
     return
         generate!(() => l = l.next(d))
         .map!(l => l.character(d))
-        .until!(x => x == ' ')
+        .until!(x => x == ' ');
+}
+
+auto part1(T)(T lines) {
+    return
+        lines
+        .diagram
+        .explore
         .filter!isAlpha
         .array;
 }
 
 auto part2(T)(T lines) {
-    Diagram d = lines.diagram;
-    Location l = d.initial;
-
     return
-        generate!(() => l = l.next(d))
-        .map!(l => l.character(d))
-        .until!(x => x == ' ')
+        lines
+        .diagram
+        .explore
         .count + 1;
 }
 
