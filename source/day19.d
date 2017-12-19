@@ -40,9 +40,9 @@ char character(Location l, const Diagram d) {
 
 Location next(Location l, const Diagram d) {
     if ('+' == l.character(d)) {
-        auto a = Location(l.x + l.dir.y, l.y + l.dir.x, Direction(l.dir.y, l.dir.x));
-        auto b = Location(l.x - l.dir.y, l.y - l.dir.x, Direction(0-l.dir.y, 0-l.dir.x));
-        auto wanted_char = (l.dir.x == 0) ? '-' : '|';
+        const a = Location(l.x + l.dir.y, l.y + l.dir.x, Direction(l.dir.y, l.dir.x));
+        const b = Location(l.x - l.dir.y, l.y - l.dir.x, Direction(0-l.dir.y, 0-l.dir.x));
+        const wanted_char = (l.dir.x == 0) ? '-' : '|';
         if (a.character(d) == wanted_char) {
             return a;
         } else if (b.character(d) == wanted_char) {
