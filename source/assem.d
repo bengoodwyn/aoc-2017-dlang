@@ -161,6 +161,45 @@ unittest {
     reg['a'].should.equal(9);
 }
 
+Jit jit_sub(Instruction instruction) {
+    enforce(instruction.length == 3, "sub requires two arguments");
+
+    immutable target_register = instruction[1][0];
+    auto arg = instruction[2];
+    if (arg.isRegister) {
+        immutable source_register = arg[0];
+        return delegate(ref Registers registers, ref Queue inq, ref Queue outq) {
+            registers[target_register] -= registers[source_register];
+            ++registers[0];
+            return false;
+        };
+    } else {
+        immutable source_immediate = to!long(arg);
+        return delegate(ref Registers registers, ref Queue inq, ref Queue outq) {
+            registers[target_register] -= source_immediate;
+            ++registers[0];
+            return false;
+        };
+    }
+}
+
+unittest {
+    import fluent.asserts;
+
+    Registers reg;
+    Queue qs;
+
+    reg['a'] = 1;
+    jit_sub(["sub","a","5"])(reg,qs,qs).should.equal(false);
+    reg[0].should.equal(1);
+    reg['a'].should.equal(-4);
+
+    reg['b'] = 3;
+    jit_sub(["sub","a","b"])(reg,qs,qs).should.equal(false);
+    reg[0].should.equal(2);
+    reg['a'].should.equal(-7);
+}
+
 Jit jit_set(Instruction instruction) {
     enforce(instruction.length == 3, "set requires two arguments");
 
@@ -209,6 +248,7 @@ Jit jit_mul(Instruction instruction) {
         return delegate(ref Registers registers, ref Queue inq, ref Queue outq) {
             registers[target_register] *= registers[source_register];
             ++registers[0];
+            ++registers[4];
             return false;
         };
     } else {
@@ -216,6 +256,7 @@ Jit jit_mul(Instruction instruction) {
         return delegate(ref Registers registers, ref Queue inq, ref Queue outq) {
             registers[target_register] *= source_immediate;
             ++registers[0];
+            ++registers[4];
             return false;
         };
     }
@@ -230,11 +271,13 @@ unittest {
     reg['a'] = 2;
     jit_mul(["mul","a","5"])(reg,qs,qs).should.equal(false);
     reg[0].should.equal(1);
+    reg[4].should.equal(1);
     reg['a'].should.equal(10);
 
     reg['b'] = 3;
     jit_mul(["mul","a","b"])(reg,qs,qs).should.equal(false);
     reg[0].should.equal(2);
+    reg[4].should.equal(2);
     reg['a'].should.equal(30);
 }
 
@@ -278,7 +321,7 @@ unittest {
 }
 
 Jit jit_jgz(Instruction instruction) {
-    enforce(instruction.length == 3, "add requires two arguments");
+    enforce(instruction.length == 3, "jgz requires two arguments");
 
     immutable test_arg = instruction[1];
     bool delegate(const ref Registers) tester;
@@ -336,6 +379,70 @@ unittest {
     reg['a'] = 1;
     jit_jgz(["jgz","a","10"])(reg,qs,qs).should.equal(false);
     reg[0].should.equal(11);
+}
+
+Jit jit_jnz(Instruction instruction) {
+    enforce(instruction.length == 3, "jnz requires two arguments");
+
+    immutable test_arg = instruction[1];
+    bool delegate(const ref Registers) tester;
+    if (test_arg.isRegister) {
+        immutable test_register = test_arg[0];
+        tester = delegate(const ref Registers registers) {
+            return registers[test_register] != 0;
+        };
+    } else {
+        immutable test_immediate = to!long(test_arg);
+        tester = delegate(const ref Registers) {
+            return test_immediate != 0;
+        };
+    }
+
+    auto arg = instruction[2];
+    if (arg.isRegister) {
+        immutable jump_register = arg[0];
+        return delegate(ref Registers registers, ref Queue inq, ref Queue outq) {
+            if (tester(registers)) {
+                registers[0] += registers[jump_register];
+            } else {
+                ++registers[0];
+            }
+            return false;
+        };
+    } else {
+        immutable jump_immediate = to!long(arg);
+        return delegate(ref Registers registers, ref Queue inq, ref Queue outq) {
+            if (tester(registers)) {
+                registers[0] += jump_immediate;
+            } else {
+                ++registers[0];
+            }
+            return false;
+        };
+    }
+}
+
+unittest {
+    import fluent.asserts;
+
+    Registers reg;
+    Queue qs;
+
+    jit_jnz(["jnz","0","999"])(reg,qs,qs).should.equal(false);
+    reg[0].should.equal(1);
+
+    jit_jnz(["jnz","a","999"])(reg,qs,qs).should.equal(false);
+    reg[0].should.equal(2);
+
+    jit_jnz(["jnz","1","-1"])(reg,qs,qs).should.equal(false);
+    reg[0].should.equal(1);
+
+    reg['a'] = 1;
+    jit_jnz(["jnz","a","10"])(reg,qs,qs).should.equal(false);
+    reg[0].should.equal(11);
+    
+    jit_jnz(["jnz","-1","11"])(reg,qs,qs).should.equal(false);
+    reg[0].should.equal(22);
 }
 
 Jit jit_send(Instruction instruction) {
@@ -422,6 +529,7 @@ Jit jit_instruction(Instruction instruction) {
     auto opcode = instruction[0];
 
     mixin(DispatchOpcode!("add"));
+    mixin(DispatchOpcode!("sub"));
     mixin(DispatchOpcode!("mul"));
     mixin(DispatchOpcode!("mod"));
     mixin(DispatchOpcode!("set"));
@@ -430,6 +538,7 @@ Jit jit_instruction(Instruction instruction) {
     mixin(DispatchOpcode!("send"));
     mixin(DispatchOpcode!("recv"));
     mixin(DispatchOpcode!("jgz"));
+    mixin(DispatchOpcode!("jnz"));
 
     throw new Exception("Unknown opcode '%s'".format(opcode));
 }
